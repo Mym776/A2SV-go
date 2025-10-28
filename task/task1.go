@@ -6,6 +6,22 @@ import (
 	"unicode"
 )
 
+func main() {
+	
+	// frequencey counter
+	fmt.Println(Counter("GO is a staticaly typed language"))
+	fmt.Println(Counter("I REALLY really like food"))
+	fmt.Println(Counter("Are you sure? you do not look alright at all!"))
+	
+	// palindrome 
+	fmt.Println(palindrome("hello"))
+	fmt.Println(palindrome("atta"))
+	fmt.Println(palindrome("AtTa"))
+	fmt.Println(palindrome("At!@Ta"))
+
+}
+
+
 func palindrome(words string) bool {
 	words = strings.ToLower(words)
 	var word []rune
@@ -55,17 +71,3 @@ func Counter(s string) map[string]int {
 	return dictionary
 }
 
-func main() {
-	
-	// frequencey counter
-	fmt.Println(Counter("GO is a staticaly typed language"))
-	fmt.Println(Counter("I REALLY really like food"))
-	fmt.Println(Counter("Are you sure? you do not look alright at all!"))
-	
-	// palindrome 
-	fmt.Println(palindrome("hello"))
-	fmt.Println(palindrome("atta"))
-	fmt.Println(palindrome("AtTa"))
-	fmt.Println(palindrome("At!@Ta"))
-
-}
