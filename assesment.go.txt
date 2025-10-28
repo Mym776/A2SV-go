@@ -1,0 +1,72 @@
+// package main
+
+// import (
+// 	"encoding/json"
+// 	"log"
+// 	"net/http"
+// 	"map"
+// )
+// var db = make(map[string]string) 
+
+// // User struct to hold user data
+// type User struct {
+// 	Email    string `json:"email"`
+// 	Password string `json:"password"`
+// }
+
+// // in-memory database simulation
+// // TODO: use a slice or a map to store user data
+// func storeUser(user User){
+// 	db[user]=hashPassword(user.Password)
+// }
+// // helper function to hash password
+// func hashPassword(password string) string {
+// 	// using a simple hash function for demonstration purposes
+// 	// In a real application, a secure hashing algorithm is used instead
+// 	return "hashed_" + password
+// }
+
+// func register(user *User) int {
+
+// 	// TODO: implement the register function as per the instructions
+// 	if user.Email=="" || db[user.Email]!="" || user.Password==""{
+// 		return -1
+// 	}
+// 	storeUser(user)
+// 	return 0 // registration successful
+// }
+
+// func registerHandler(w http.ResponseWriter, r *http.Request) {
+// 	var user User
+
+// 	// parse the request body
+// 	err := json.NewDecoder(r.Body).Decode(&user)
+// 	if err != nil {
+// 		http.Error(w, "Invalid request body", http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// register the user
+// 	result := register(&user)
+// 	if result == -1 {
+// 		http.Error(w, "User already exists or invalid input", http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// respond with success message
+// 	w.WriteHeader(http.StatusCreated)
+// 	w.Write([]byte("User registered successfully"))
+// }
+
+// func main() {
+// 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+// 		if r.Method == http.MethodPost {
+// 			registerHandler(w, r)
+// 		} else {
+// 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+// 		}
+// 	})
+
+// 	// start the http server on port 8080
+// 	log.Fatal(http.ListenAndServe(":8080", nil))
+// }
