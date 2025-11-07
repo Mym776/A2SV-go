@@ -19,5 +19,8 @@ func main(){
 	// Rec()
 	// Range()
 	// Point()
-	Strin()
+	// Strin()
+	// Struc()
+	// Meth()
+	Interf()
 }
