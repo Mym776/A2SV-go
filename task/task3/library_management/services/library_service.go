@@ -10,7 +10,7 @@ type Library struct {
 	MemberList map[int]models.Member
 }
 
-type LibraryManager interface{
+type LibraryManager interface {
 	AddBook(models.Book)
 	RemoveBook(int)
 	BorrowBook(int, int)
@@ -20,27 +20,27 @@ type LibraryManager interface{
 	AddMember(string)
 }
 
-func NewLibrary() Library{
+func NewLibrary() Library {
 	return Library{make(map[int]models.Book), make(map[int]models.Member)}
 }
 
 func (l Library) AddBook(book models.Book) {
 	book.ID = len(l.BookList)
 	_, exist := l.BookList[book.ID]
-	if exist == false {
+	if !exist {
 		l.BookList[book.ID] = book
-		fmt.Println(book.ID, book.Title, " added to the Library")
+		fmt.Println("\n",book.Title, " by ", book.Author," added to the Library")
 	} else {
-		fmt.Println(book.ID, book.Title, " is already in the Library")
+		fmt.Println(book.Title, " is already in the Library")
 	}
 
 }
 
 func (l Library) RemoveBook(bookID int) {
-	_, exist := l.BookList[bookID]
+	removed, exist := l.BookList[bookID]
 	if exist {
 		delete(l.BookList, bookID)
-		fmt.Println("book removed from Library")
+		fmt.Println(removed.Title," removed from Library")
 	} else {
 		fmt.Println("Book not found")
 	}
@@ -49,9 +49,9 @@ func (l Library) RemoveBook(bookID int) {
 func (l Library) BorrowBook(bookID int, memberID int) {
 	borrowedbook, bookExist := l.BookList[bookID]
 	member, memberExist := l.MemberList[memberID]
-	if !bookExist || !memberExist{
+	if !bookExist || !memberExist {
 		fmt.Println("Invalid entry")
-		return 
+		return
 	}
 	if borrowedbook.Status == "borrowed" {
 		fmt.Println("Book not available")
@@ -59,51 +59,74 @@ func (l Library) BorrowBook(bookID int, memberID int) {
 	}
 	borrowedbook.Status = "borrowed"
 	l.BookList[bookID] = borrowedbook
-	member.BorrowedBooks =append(member.BorrowedBooks,borrowedbook)
+	member.BorrowedBooks = append(member.BorrowedBooks, borrowedbook)
 	l.MemberList[memberID] = member
-	fmt.Println(bookID," borrowed to member ", memberID)
+	fmt.Println(borrowedbook.Title, " borrowed to member ", member.Name)
 
 }
 
 func (l Library) ReturnBook(bookID int, memberID int) {
-	borrowedbook, bookExist := l.BookList[bookID]
+
 	member, memberExist := l.MemberList[memberID]
-	if !bookExist || !memberExist{
+	borrowedbook, bookExist := l.BookList[bookID]
+	if !bookExist || !memberExist {
 		fmt.Println("Invalid entry")
-		return 
+		return
 	}
-	
-	borrowedbook.Status = "borrowed"
-	l.BookList[bookID] = borrowedbook
-	member.BorrowedBooks =append(member.BorrowedBooks,borrowedbook)
-	l.MemberList[memberID] = member
-	fmt.Println(bookID," borrowed to member ", memberID)
+	var memberBook bool = false
+
+	for i, j := range member.BorrowedBooks {
+		if j == borrowedbook {
+			memberBook = true
+
+			//remove the book from the member's borrowed book list
+			if len(member.BorrowedBooks) == 1 {
+				member.BorrowedBooks = []models.Book{}
+			} else if len(member.BorrowedBooks) == i+1 {
+				member.BorrowedBooks = member.BorrowedBooks[:len(member.BorrowedBooks)-1]
+			} else {
+				member.BorrowedBooks = append(member.BorrowedBooks[:i], member.BorrowedBooks[i+1])
+
+			}
+			break
+		}
+	}
+	if !memberBook {
+		fmt.Println("Book was not borrowed by memeber : ", member.Name)
+		return
+	} else {
+		borrowedbook.Status = "available"
+		l.BookList[bookID]=borrowedbook
+		l.MemberList[memberID]=member
+		fmt.Println(borrowedbook.Title, " successfully returned to the library")
+		
+	}
 
 }
 
-func (l Library) ListAvailableBooks() []models.Book{
+func (l Library) ListAvailableBooks() []models.Book {
 	var availableBooks []models.Book
-	for _, book := range l.BookList{
-		if book.Status=="available"{
+	for _, book := range l.BookList {
+		if book.Status == "available" {
 			availableBooks = append(availableBooks, book)
 		}
 	}
 	return availableBooks
 }
 
-func(l Library) ListBorrowedBooks(memberID int) []models.Book{
-	
+func (l Library) ListBorrowedBooks(memberID int) []models.Book {
+
 	m, memberExist := l.MemberList[memberID]
-	if !memberExist{
+	if !memberExist {
 		fmt.Println("member does not exist")
 		return nil
 	}
 	return m.BorrowedBooks
 }
 
-func(l Library) AddMember(name string){
+func (l Library) AddMember(name string) {
 	id := len(l.MemberList)
 	m := models.NewMember(id, name)
 	l.MemberList[id] = m
-	fmt.Println(m.Name," add as a member")
+	fmt.Println(m.Name, " added as a member")
 }
