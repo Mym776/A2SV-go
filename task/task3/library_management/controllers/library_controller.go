@@ -13,6 +13,8 @@ import (
 	// "strings"
 )
 
+// library_contoller.go accepts user input and calls on appropriate functions from library_service.go
+
 func Start(l services.LibraryManager) {
 
 	menu()
@@ -65,6 +67,7 @@ func Start(l services.LibraryManager) {
 
 }
 
+// displays menu
 func menu() {
 	fmt.Println("Welcome to the Library")
 	fmt.Println("1. Add a book")
@@ -78,11 +81,10 @@ func menu() {
 
 }
 
+
+//accepts book name and book author, creates a book instance and adds it to the library
 func addbook(l services.LibraryManager) {
 	fmt.Println(" - - - - - - - - - - - - - - - - ")
-
-	
-	
 
 	var title string
 	var author string
@@ -112,6 +114,8 @@ func addbook(l services.LibraryManager) {
 
 }
 
+
+// accepts book id and passes it to be removed from the library
 func removebook(l services.LibraryManager) {
 	fmt.Println("\n - - - - - - - - - - - - - - - - ")
 	
@@ -124,6 +128,7 @@ func removebook(l services.LibraryManager) {
 
 }
 
+// accepts the id of the member and the book to be borrowed 
 func borrowbook(l services.LibraryManager) {
 	fmt.Println("\n - - - - - - - - - - - - - - - - ")
 
@@ -138,6 +143,7 @@ func borrowbook(l services.LibraryManager) {
 
 }
 
+// accepts member id and displays the list of books the user borrowed 
 func listborrowedbook(l services.LibraryManager) {
 	fmt.Println("\n - - - - - - - - - - - - - - - -")
 
@@ -158,6 +164,7 @@ func listborrowedbook(l services.LibraryManager) {
 
 }
 
+// lists all books that are available to be borrowed in the library
 func listavailablebooks(l services.LibraryManager) {
 	fmt.Println("\n - - - - - - - - - - - - - - - - ")
 
@@ -170,6 +177,7 @@ func listavailablebooks(l services.LibraryManager) {
 
 }
 
+//adds a member to the library
 func addmember(l services.LibraryManager) {
 
 	var name string
@@ -180,6 +188,7 @@ func addmember(l services.LibraryManager) {
 
 }
 
+// accepts member and book id to be returned to the library
 func returnbook(l services.LibraryManager) {
 	fmt.Println("\n - - - - - - - - - - - - - - - - ")
 	
@@ -196,6 +205,7 @@ func returnbook(l services.LibraryManager) {
 }
 
 
+// input handling functions
 func input()string{
 	buff := bufio.NewReader(os.Stdin)
 	userInput,err := buff.ReadString('\n')

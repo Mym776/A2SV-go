@@ -5,6 +5,7 @@ import (
 	"library/models"
 )
 
+// library that stores members and books
 type Library struct {
 	BookList   map[int]models.Book
 	MemberList map[int]models.Member
@@ -20,10 +21,12 @@ type LibraryManager interface {
 	AddMember(string)
 }
 
+//returns a new instance of a library
 func NewLibrary() Library {
 	return Library{make(map[int]models.Book), make(map[int]models.Member)}
 }
 
+// adds a book to the library
 func (l Library) AddBook(book models.Book) {
 	book.ID = len(l.BookList)
 	_, exist := l.BookList[book.ID]
@@ -36,6 +39,7 @@ func (l Library) AddBook(book models.Book) {
 
 }
 
+//removes a book from the library
 func (l Library) RemoveBook(bookID int) {
 	removed, exist := l.BookList[bookID]
 	if exist {
@@ -46,6 +50,7 @@ func (l Library) RemoveBook(bookID int) {
 	}
 }
 
+// takes a book and gives it to a member 
 func (l Library) BorrowBook(bookID int, memberID int) {
 	borrowedbook, bookExist := l.BookList[bookID]
 	member, memberExist := l.MemberList[memberID]
@@ -65,6 +70,7 @@ func (l Library) BorrowBook(bookID int, memberID int) {
 
 }
 
+// accepts a book returned by a member
 func (l Library) ReturnBook(bookID int, memberID int) {
 
 	member, memberExist := l.MemberList[memberID]
@@ -104,6 +110,7 @@ func (l Library) ReturnBook(bookID int, memberID int) {
 
 }
 
+// lists all books available to be borrowed 
 func (l Library) ListAvailableBooks() []models.Book {
 	var availableBooks []models.Book
 	for _, book := range l.BookList {
@@ -114,6 +121,7 @@ func (l Library) ListAvailableBooks() []models.Book {
 	return availableBooks
 }
 
+// lists all books borrowed by a specific member
 func (l Library) ListBorrowedBooks(memberID int) []models.Book {
 
 	m, memberExist := l.MemberList[memberID]
@@ -124,6 +132,7 @@ func (l Library) ListBorrowedBooks(memberID int) []models.Book {
 	return m.BorrowedBooks
 }
 
+// adds a new member to the library
 func (l Library) AddMember(name string) {
 	id := len(l.MemberList)
 	m := models.NewMember(id, name)

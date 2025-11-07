@@ -1,5 +1,6 @@
 package models
 
+// defines a user who is a member of the library
 type Member struct{
 	ID int
 	Name string
