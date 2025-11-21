@@ -22,5 +22,6 @@ func main(){
 	// Strin()
 	// Struc()
 	// Meth()
-	Interf()
+	// Interf()
+	
 }
