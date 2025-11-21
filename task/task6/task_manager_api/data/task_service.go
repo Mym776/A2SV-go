@@ -19,6 +19,8 @@ var MyURL = "mongodb://localhost:27017"
 
 func Tasks(c *gin.Context) []models.Task {
 	client := ConnectDB(c)
+	// defer statement closes the connection with the db after the function is done
+	defer DisconnectDB(c, client)
 	collection := client.Database("Task_manager").Collection("Tasks")
 
 	cursor, err := collection.Find(c, bson.D{})
@@ -26,9 +28,12 @@ func Tasks(c *gin.Context) []models.Task {
 		log.Fatal(err)
 	}
 
+
 	defer cursor.Close(c)
 
 	var taskList = []models.Task{}
+
+	// loops through the results in the cursor and appends it to an array 
 	for cursor.Next(c) {
 		var result models.Task
 		err := cursor.Decode(&result)
@@ -37,7 +42,6 @@ func Tasks(c *gin.Context) []models.Task {
 		}
 		taskList = append(taskList, result)
 	}
-	DisconnectDB(c, client)
 
 	return taskList
 }
@@ -53,6 +57,7 @@ func TaskId(c *gin.Context, id string) models.Task {
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			//if not found return an empty task instance
 			return models.Task{}
 		}
 		log.Fatal(err) // Return other errors
@@ -85,9 +90,8 @@ func UpdateTask(c *gin.Context, id string, update models.Task) bool {
 	if err != nil {
 		return false
 	}
-	fmt.Println(up.MatchedCount)
-	fmt.Println(up.ModifiedCount)
-	fmt.Println(err)
+	
+	
 	if up.ModifiedCount > 0 {
 		return true
 
@@ -147,6 +151,8 @@ func AddTask(c *gin.Context, task models.Task) bool {
 	}
 }
 
+
+//connects to the database and returns the client
 func ConnectDB(c *gin.Context) *mongo.Client {
 
 	clientOptions := options.Client().ApplyURI(MyURL)
@@ -161,6 +167,7 @@ func ConnectDB(c *gin.Context) *mongo.Client {
 
 }
 
+// disconnects from the database
 func DisconnectDB(c *gin.Context, db *mongo.Client) {
 	err := db.Disconnect(c)
 
