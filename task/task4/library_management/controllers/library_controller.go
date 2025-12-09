@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"library/models"
 	"library/services"
+	"library/concurrency"
 	"log"
 	"os"
 	"strconv"
@@ -23,7 +24,7 @@ func Start(l services.LibraryManager) {
 		var inp int
 	fmt.Println("\n - - - - - - - - - - - - - - - - ")
 		
-		fmt.Print("Please input from 1-7: ")
+		fmt.Print("Please input from 1-8, -1 to exit: ")
 		
 		inp = inputInt()
 		switch inp {
@@ -54,7 +55,8 @@ func Start(l services.LibraryManager) {
 		case 7:
 			//List borrowed books by a member
 			listborrowedbook(l)
-
+		case 8:
+			reserve(l)
 		case -1:
 			// exit
 			return
@@ -77,6 +79,7 @@ func menu() {
 	fmt.Println("5. Return a book")
 	fmt.Println("6. List all available books")
 	fmt.Println("7. List all borrowed books by a member")
+	fmt.Println("8. Reserve book")
 	fmt.Println("-1. Exit")
 
 }
@@ -202,6 +205,20 @@ func returnbook(l services.LibraryManager) {
 	l.ReturnBook(bookid, memberid)
 	
 
+}
+
+
+func reserve(l services.LibraryManager) {
+	fmt.Println("\n - - - - - - - - - - - - - - - - ")
+	
+
+	var bookid, memberid int
+	fmt.Println("Member id: ")
+	memberid = inputInt()
+	fmt.Println("Book id: ")
+	bookid = inputInt()
+
+	concurrency.Reservation(memberid,bookid,l)
 }
 
 

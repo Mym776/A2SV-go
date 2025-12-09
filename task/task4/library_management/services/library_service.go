@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"library/models"
+	"time"
 )
 
 // library that stores members and books
@@ -19,6 +20,8 @@ type LibraryManager interface {
 	ListAvailableBooks() []models.Book
 	ListBorrowedBooks(int) []models.Book
 	AddMember(string)
+	ReserveBook(int, int)
+	UnReserveBook(int,int)
 }
 
 //returns a new instance of a library
@@ -61,6 +64,21 @@ func (l Library) BorrowBook(bookID int, memberID int) {
 	if borrowedbook.Status == "borrowed" {
 		fmt.Println("Book not available")
 		return
+	}else if borrowedbook.Status == "reserved"{
+		reserved := false
+		for i,j := range member.BorrowedBooks{
+			if j == borrowedbook {
+				fmt.Println("reserved book successfuly borrowed")
+				reserved = true
+				member.BorrowedBooks = append(member.BorrowedBooks[:i],member.BorrowedBooks[i+1:]... )
+				break
+			}
+		}
+		if !reserved{
+			fmt.Println("Book not available")
+			return 
+		}else{
+		}
 	}
 	borrowedbook.Status = "borrowed"
 	l.BookList[bookID] = borrowedbook
@@ -137,5 +155,61 @@ func (l Library) AddMember(name string) {
 	id := len(l.MemberList)
 	m := models.NewMember(id, name)
 	l.MemberList[id] = m
-	fmt.Println(m.Name, " added as a member")
+	fmt.Println(m.Name, " added as a member, ID: ",m.ID)
 }
+
+
+func(l Library) ReserveBook(memberID int, bookID int) {
+	
+	book, bookExist := l.BookList[bookID]
+	member, memberExist := l.MemberList[memberID]
+
+	if !bookExist {
+		fmt.Println("book does not exist")
+		return
+	}
+
+	if !memberExist {
+		fmt.Println("member does not exist")
+		return
+	}
+
+	
+	if book.Status != "available"{
+		fmt.Println("Book not available for reservation")
+		return 
+	} 
+		
+	book.Status = "reserved"
+	member.BorrowedBooks = append(member.BorrowedBooks, book)
+
+	l.BookList[bookID] = book
+	l.MemberList[memberID] = member
+	fmt.Println("book reserved, valid for 15 seconds")
+	
+}
+
+func(l Library) UnReserveBook(memberID int, bookID int) {
+	time.Sleep(15*time.Second)
+	book, bookExist := l.BookList[bookID]
+	_, memberExist := l.MemberList[memberID]
+
+	if !bookExist {
+		fmt.Println("book does not exist")
+		return
+	}
+
+	if !memberExist {
+		fmt.Println("member does not exist")
+		return
+	}
+
+	
+	if book.Status == "borrowed"{
+		return 
+	} 
+	
+	l.ReturnBook(bookID,memberID)
+	fmt.Println("book unreserved")
+}
+
