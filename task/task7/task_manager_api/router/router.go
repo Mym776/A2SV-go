@@ -18,6 +18,7 @@ func Route()*gin.Engine{
 	router.PUT("/tasks/:id",auth.AuthAdminMiddleware(), controller.UpdateTaskId)
 	router.DELETE("/tasks/:id",auth.AuthAdminMiddleware(),controller.DeleteTaskById)
 	router.POST("/tasks/new",auth.AuthAdminMiddleware(), controller.AddTask)
+	
 	router.POST("/register",controller.Register)
 	router.POST("/login",controller.Login)
 	router.POST("/promote/:username",auth.AuthAdminMiddleware(), controller.Promote)
