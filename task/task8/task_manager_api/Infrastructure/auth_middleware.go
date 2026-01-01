@@ -10,7 +10,7 @@ import (
 )
 
 func middleware(c *gin.Context) (jwt.MapClaims, bool) {
-	
+	//middleware for auth
 	// checks if the auth is in the proper format
 	authHandler := c.GetHeader("Authorization")
 	if authHandler == "" {
