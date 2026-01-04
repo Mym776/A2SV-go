@@ -25,7 +25,7 @@ func middleware(c *gin.Context) (jwt.MapClaims, bool) {
 		c.Abort()
 		return nil, false
 	}
-	//checks if the token is signed using the HMAC_SHA family of signing and returns the jwt secret
+	//checks if the token is signed using the HMAC_SHA family of signing and returns the jwt secret/
 	token, err := jwt.Parse(authParts[1], func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
