@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-//cmt
+
 func GetAllTasks(c *gin.Context) {
 
 	t := usecases.TaskUsecase{Repo: repositories.TaskRepository{Context: c}}
